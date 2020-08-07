@@ -6,7 +6,7 @@ const sqlite3 = require('sqlite3').verbose();
 const tstop = document.getElementById("data");
 const { remote, BrowserWindow } = require('electron');
 const ipcRenderer = require('electron').ipcRenderer;
-let table = "classes";
+let table = "Apparat";
 let head = {"fields": {}};
 let clicked = null;
 let id = 0;
@@ -17,7 +17,7 @@ ipcRenderer.on('action', (x, msg) => {
 })
 
 function load() {
-    let db = new sqlite3.Database(path.resolve('/Users/vexelb/Documents/sqlite.db'), sqlite3.OPEN_READWRITE, (err) => {
+    let db = new sqlite3.Database(path.resolve('testMCHS.db'), sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
           console.error(err.message);
         }
@@ -29,7 +29,7 @@ function load() {
             for (let i in head.fields) {
                 sql += `${i} = '${head.fields[i]}',`
             }
-            sql = sql.slice(0,sql.length-1) + ` WHERE cID = ${head.fields.cID};`
+            sql = sql.slice(0,sql.length-1) + ` WHERE id = ${head.fields.id};`
         }
         if (head.action == "add") {
             sql += `INSERT into ${head.table} VALUES (`;
@@ -39,7 +39,7 @@ function load() {
             sql = sql.slice(0,sql.length-1) + ');'
         }
         if (head.action == "delete") {
-            sql += `DELETE from ${table} WHERE cID = ${head.fields.cID}`
+            sql += `DELETE from ${table} WHERE id = ${head.fields.id}`
         }
         if (sql) {
             db.run(sql, (err) => {
@@ -67,9 +67,9 @@ function load() {
             if (err) {
             console.error(err);
             }
-            id = row.cID;
+            id = row.id;
             for (let i in row) {
-                document.getElementById(i).innerHTML += `<div class="row" id="row${row.cID}">${row[i]}</div>  `;
+                document.getElementById(i).innerHTML += `<div class="row" id="row${row.id}">${row[i]}</div>  `;
             };
             document.querySelectorAll('.row').forEach( (x) => {
                 x.addEventListener('click', () => {
@@ -119,7 +119,7 @@ addbtn.addEventListener('click', () => {
         for (let i in head.fields) {
             head.fields[i] = '';
         }
-        head.fields.cID = id + 1;
+        head.fields.id = id + 1;
         head.table = table;
         head.action = "add";
         win.webContents.send('data', head)
@@ -168,6 +168,13 @@ delbtn.addEventListener('click', () => {
     else {
         alert("Не выбрано")
     }
+})
+
+document.querySelectorAll(".tables").forEach((x) => {
+    x.addEventListener('click', () => {
+        table = x.id;
+        load();
+    })
 })
 
 load();
