@@ -3,7 +3,7 @@ const chgbtn = document.getElementById("change");
 const delbtn = document.getElementById("delete");
 const okbtn = document.getElementById("addclose");
 const clsbtn = document.getElementById("close");
-// const path = require("path");
+const path = require("path");
 const sqlite3 = require('sqlite3').verbose();
 const tstop = document.getElementById("data");
 const tstop1 = document.getElementById("data1");
@@ -33,7 +33,7 @@ function load() {
             for (let i in head.fields) {
                 sql += `${i} = '${head.fields[i]}',`
             }
-            sql = sql.slice(0,sql.length-1) + ` WHERE id = ${head.fields.id};`
+            sql = sql.slice(0,sql.length-1) + ` WHERE id = ${head.oldid};`
         }
         if (head.action == "add") {
             sql += `INSERT into ${head.table} VALUES (`;
@@ -79,6 +79,7 @@ function load() {
                     if (clicked) {
                         document.querySelectorAll(`#${clicked}`).forEach( (x) => {
                             x.style.backgroundColor = 'white';
+                            x.style.color = 'black';
                         })
                     }
                     if (clicked !== x.id) {
@@ -91,6 +92,7 @@ function load() {
                         }
                         document.querySelectorAll(`#${clicked}`).forEach( (x) => {
                             x.style.backgroundColor = 'blue';
+                            x.style.color = 'white';
                         })
                     }
                     else {
@@ -162,7 +164,8 @@ chgbtn.addEventListener('click', () => {
         //     win = null;
         // })
         head.table = table;
-        head.action = "add";
+        head.action = "change";
+        head.oldid = head.fields.id;
         for (let i in head.fields){
             tstop1.innerHTML += `<div id="div${i}">${i}: <input id = "input${i}" value="${head.fields[i]}"></div>`;
         }
