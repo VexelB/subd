@@ -1,23 +1,27 @@
 const addbtn = document.getElementById("add");
 const chgbtn = document.getElementById("change");
 const delbtn = document.getElementById("delete");
-const path = require("path");
+const okbtn = document.getElementById("addclose");
+const clsbtn = document.getElementById("close");
+// const path = require("path");
 const sqlite3 = require('sqlite3').verbose();
 const tstop = document.getElementById("data");
-const { remote, BrowserWindow } = require('electron');
-const ipcRenderer = require('electron').ipcRenderer;
+const tstop1 = document.getElementById("data1");
+// const { remote, BrowserWindow } = require('electron');
+// const ipcRenderer = require('electron').ipcRenderer;
+const modal = document.getElementById("myModal");
 let table = "Apparat";
 let head = {"fields": {}};
 let clicked = null;
-let id = 0;
+// let id = 0;
+// let path = 'mda';
 
-ipcRenderer.on('action', (x, msg) => {
-    head = msg;
-    load();
-})
+// ipcRenderer.on('opend-file', (e, file) => {
+//     console.log(file);
+// })
 
 function load() {
-    let db = new sqlite3.Database(path.resolve('testMCHS.db'), sqlite3.OPEN_READWRITE, (err) => {
+    let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
           console.error(err.message);
         }
@@ -59,7 +63,7 @@ function load() {
         tstop.innerHTML = "";
         db.get(`SELECT * from ${table}`, (err, row) => {
             for (let i in row) {
-                tstop.innerHTML += `<div id="${i}" style="float:left; border: solid 1px black">${i}</div>`;
+                tstop.innerHTML += `<div class = "table" id="${i}">${i}</div>`;
                 head.fields[i] = ''
             };
         })
@@ -67,7 +71,6 @@ function load() {
             if (err) {
             console.error(err);
             }
-            id = row.id;
             for (let i in row) {
                 document.getElementById(i).innerHTML += `<div class="row" id="row${row.id}">${row[i]}</div>  `;
             };
@@ -102,58 +105,68 @@ function load() {
 }
 
 addbtn.addEventListener('click', () => {
-    const top = remote.getCurrentWindow();
-    let win = new remote.BrowserWindow({
-        width: document.documentElement.clientWidth / 2,
-        height: document.documentElement.clientHeight / 2,
-        webPreferences: {
-            nodeIntegration: true,
-            enableRemoteModule: true
-        },
-        show: false,
-        parent: top,
-        modal: true
-    });
-    win.loadFile('db.html');
-    win.once('ready-to-show', () => {
-        for (let i in head.fields) {
-            head.fields[i] = '';
-        }
-        head.fields.id = id + 1;
-        head.table = table;
-        head.action = "add";
-        win.webContents.send('data', head)
-        win.show();
-    })
-    win.on('close', () => {
-        win = null;
-    })
+    // const top = remote.getCurrentWindow();
+    // let win = new remote.BrowserWindow({
+    //     width: document.documentElement.clientWidth / 2,
+    //     height: document.documentElement.clientHeight / 2,
+    //     webPreferences: {
+    //         nodeIntegration: true,
+    //         enableRemoteModule: true
+    //     },
+    //     show: false,
+    //     parent: top,
+    //     modal: true
+    // });
+    // win.loadFile('db.html');
+    // win.once('ready-to-show', () => {
+    //     head.fields.id = id + 1;
+    //     win.webContents.send('data', head)
+    //     win.show();
+    // })
+    // win.on('close', () => {
+    //     win = null;
+    // })
+    head.table = table;
+    head.action = "add";
+    for (let i in head.fields) {
+        head.fields[i] = '';
+    }
+    for (let i in head.fields){
+        tstop1.innerHTML += `<div id="div${i}">${i}: <input id = "input${i}" value="${head.fields[i]}"></div>`;
+    }
+    modal.style.display = "block";
 });
 
 chgbtn.addEventListener('click', () => {
     if (clicked) {
-        const top = remote.getCurrentWindow();
-        let win = new remote.BrowserWindow({
-            width: document.documentElement.clientWidth / 2,
-            height: document.documentElement.clientHeight / 2,
-            webPreferences: {
-                nodeIntegration: true,
-                enableRemoteModule: true
-            },
-            show: false,
-            parent: top,
-            modal: true
-        });
-        win.loadFile('db.html');
-        win.once('ready-to-show', () => {
-            head.table = table;
-            head.action = "change";
-            win.webContents.send('data', head)
-            win.show();
-        })
-        win.on('close', () => {
-            win = null;
-        })
+        // const top = remote.getCurrentWindow();
+        // let win = new remote.BrowserWindow({
+        //     width: document.documentElement.clientWidth / 2,
+        //     height: document.documentElement.clientHeight / 2,
+        //     webPreferences: {
+        //         nodeIntegration: true,
+        //         enableRemoteModule: true
+        //     },
+        //     show: false,
+        //     parent: top,
+        //     modal: true
+        // });
+        // win.loadFile('db.html');
+        // win.once('ready-to-show', () => {
+        //     head.table = table;
+        //     head.action = "change";
+        //     win.webContents.send('data', head)
+        //     win.show();
+        // })
+        // win.on('close', () => {
+        //     win = null;
+        // })
+        head.table = table;
+        head.action = "add";
+        for (let i in head.fields){
+            tstop1.innerHTML += `<div id="div${i}">${i}: <input id = "input${i}" value="${head.fields[i]}"></div>`;
+        }
+        modal.style.display = "block";
     }
     else {
         alert("Выберете запись");
@@ -177,4 +190,27 @@ document.querySelectorAll(".tables").forEach((x) => {
     })
 })
 
+okbtn.addEventListener('click', () => {
+    for (let i in head.fields) {
+        head.fields[i] = document.getElementById(`input${i}`).value;
+    }
+    modal.style.display = "none";
+    tstop1.innerHTML = '';
+    load();
+})
+
+// window.addEventListener('click', (e) => {
+//     if (e.target == modal) {
+//         if (modal.style.display != "none") {
+//             modal.style.display = "none";
+//         }
+//     }
+// })
+
+clsbtn.addEventListener('click', () => {
+    modal.style.display = "none";
+    tstop1.innerHTML = '';
+});
+
 load();
+// ipcRenderer.send('open-file','mda');

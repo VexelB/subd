@@ -3,8 +3,43 @@
   <head>
     <meta charset="UTF-8">
     <title>Hello World!</title>  
+    <style>
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+      .table {
+        float:left; 
+        border: solid 1px black; 
+        padding: 2px;
+      }
+    </style>
   </head>
   <body>
+    <div id="myModal" class="modal">
+      <div class = "modal-content">
+      <button id="addclose">Ок</button>
+      <button id="close">Отмена</button><br>
+      <div id="data1"></div>
+      <!-- <script src="db.js"></script> -->
+      </div>
+    </div>
     <div id="main" style="height: 95vh;">
       <button id="add">Добавить</button>
       <button id="delete">Удалить</button>
@@ -16,7 +51,6 @@
       <button id="Balloon" class="tables">Балон</button>
     </div>
     <script src="index.js"></script>
-    <!-- <script src="index.js"></script> -->
     <!-- <canvas id="canvas"></canvas>
     <script>
       const QRCode = require('qrcode');
