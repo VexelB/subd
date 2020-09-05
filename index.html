@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>SUBD TEST</title>  
     <style>
+      #main {
+        overflow: auto;
+        white-space: nowrap;
+      }
       .modal {
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
@@ -23,9 +27,10 @@
         padding: 20px;
         border: 1px solid #888;
         width: 80%;
+        overflow: auto;
       }
       .table {
-        float:left; 
+        display: inline-block;
         border: solid 1px black; 
         padding: 2px;
       }
@@ -40,15 +45,17 @@
       <!-- <script src="db.js"></script> -->
       </div>
     </div>
-    <div id="main" style="height: 93vh;">
-      <button id="add">Добавить</button>
-      <button id="delete">Удалить</button>
-      <button id="change">Изменить</button>
-      <div id="data"></div>
+    <button id="add">Добавить</button>
+    <button id="delete">Удалить</button>
+    <button id="change">Изменить</button>
+    <div id="main" style="height: 86vh;">
+      <div id="data">Выберете таблицу снизу</div>
+      <div id="amdata"></div>
     </div>
+    <div id="amount" style="height: 4vh;"></div>
     <div id="footer">
-      <button id="Apparat" class="tables">Аппарат</button>
-      <button id="Balloon" class="tables">Балон</button>
+      <!-- <button id="Apparat" class="tables">Аппарат</button> -->
+      <!-- <button id="Balloon" class="tables">Балон</button> -->
     </div>
     <script src="index.js"></script>
     <!-- <canvas id="canvas"></canvas>
