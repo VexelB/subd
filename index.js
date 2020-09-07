@@ -16,6 +16,7 @@ let head = {"fields": {}};
 let clicked = null;
 let assoc = {};
 let datas = [];
+let amount = 0;
 // let id = 0;
 // let path = 'mda';
 
@@ -24,8 +25,8 @@ let datas = [];
 // })
 
 function load() {
+    amount = 0;
     document.getElementById('amdata').innerHTML = "";
-    let amount = 0;
     let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
           console.error(err.message);
@@ -66,6 +67,7 @@ function load() {
         clicked = null;
         if (head.action == "order") {
             head = {"fields": {}, "action": "order", "order": head.order};
+            console.log(head)
         }
         else {
             head = {"fields": {}};
@@ -280,6 +282,9 @@ addbtn.addEventListener('click', () => {
                 })
             })
         }
+        else if (i == 'id') {
+            tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" readonly value="${amount}"></div>`;
+        }
         else {
             tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" value="${head.fields[i]}"></div>`;
         }
@@ -341,6 +346,9 @@ chgbtn.addEventListener('click', () => {
                         document.getElementById(`input${i}`).innerHTML += `<option>${row.id}</option>`;
                     })
                 })
+            }
+            else if (i == 'id') {
+                tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" readonly value="${head.fields[i]}"></div>`;
             }
             else {
                 tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" value="${head.fields[i]}"></div>`;
