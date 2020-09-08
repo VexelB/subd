@@ -25,7 +25,6 @@ let amount = 0;
 // })
 
 function load() {
-    amount = 0;
     document.getElementById('amdata').innerHTML = "";
     let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
@@ -141,6 +140,7 @@ function load() {
                 
             }
             else {
+                amount = 0;
                 db.each(`SELECT * from ${table}`, (err, row) => {
                     amount += 1;
                     if (err) {
