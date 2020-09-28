@@ -224,8 +224,9 @@ function load() {
                 }
             })
         }
-        db.close();
+        
     });
+    db.close();
 }
 
 addbtn.addEventListener('click', () => {
@@ -256,20 +257,23 @@ addbtn.addEventListener('click', () => {
         head.fields[i] = '';
     }
     for (let i in head.fields){
-        if (datas.includes(i)) {
-            tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <select id= 'input${i}'></select></div>`;
+        if (datas.includes(`${table}.${i}`)) {
+            tstop1.innerHTML += `<div id="div${table}.${i}">${assoc[i]}: <select id= 'input${i}'></select></div>`;            
             let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
                 if (err) {
                   console.error(err.message);
                 }
             });
+            
             db.serialize(() => {
-                db.each(`Select * from datas Where name = "${i}";`, (err, row) => {
-                    document.getElementById(`input${i}`).innerHTML += `<option>${row.value}</option>`;
+                db.each(`Select * from datas Where name = "${table}.${i}";`, (err, row) => {
+                    document.getElementById(`input${i}`).innerHTML += `<option class = "opt${row.value.replace(' ', '-')}" id = "${row.comment}">${row.value}</option>`;
                 })
+                db.close();
             })
+            
         }
-        else if (tables.includes(i)) {
+        else if ((tables.includes(i)) && (table != i)) {
             tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <select id= 'input${i}'></select></div>`;
             let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
                 if (err) {
@@ -281,6 +285,7 @@ addbtn.addEventListener('click', () => {
                     document.getElementById(`input${i}`).innerHTML += `<option>${row.id}</option>`;
                 })
             })
+            db.close();
         }
         else if (i == 'id') {
             tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" readonly value="${amount}"></div>`;
@@ -291,6 +296,29 @@ addbtn.addEventListener('click', () => {
         
     }
     modal.style.display = "block";
+    for (let i in datas) {
+        if (document.getElementById(`div${datas[i]}`)) {
+            document.getElementById(`div${datas[i]}`).children[0].addEventListener('change', (x) => {
+                // if (document.querySelector(`.opt${x.target.value}`.replace(' ', '-')).id != ''){
+                //     alert(document.querySelector(`.opt${x.target.value}`.replace(' ', '-')).id)
+                // }
+                console.log('mda')
+                let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
+                    if (err) {
+                      console.error(err.message);
+                    }
+                });
+                db.serialize(() => {
+                    db.each(`Select * from datas Where value = "${x.target.value}";`, (err, row) => {
+                        if (row.comment) {
+                            alert(row.comment);
+                        }
+                    })
+                })
+                db.close();
+            })
+        }
+    }
 });
 
 chgbtn.addEventListener('click', () => {
@@ -321,20 +349,22 @@ chgbtn.addEventListener('click', () => {
         head.action = "change";
         head.oldid = head.fields.id;
         for (let i in head.fields){
-            if (datas.includes(i)) {
-                tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <select id= 'input${i}'></select></div>`;
+            if (datas.includes(`${table}.${i}`)) {
+                tstop1.innerHTML += `<div id="div${table}.${i}">${assoc[i]}: <select id= 'input${i}'></select></div>`;
                 let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
                     if (err) {
                       console.error(err.message);
                     }
                 });
                 db.serialize(() => {
-                    db.each(`Select * from datas Where name = "${i}";`, (err, row) => {
+                    db.each(`Select * from datas Where name = "${table}.${i}";`, (err, row) => {
                         document.getElementById(`input${i}`).innerHTML += `<option>${row.value}</option>`;
                     })
                 })
+                db.close();
             }
-            else if (tables.includes(i)) {
+            else if ((tables.includes(i)) && (table != i)) {
+                
                 tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <select id= 'input${i}'></select></div>`;
                 let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
                     if (err) {
@@ -346,6 +376,7 @@ chgbtn.addEventListener('click', () => {
                         document.getElementById(`input${i}`).innerHTML += `<option>${row.id}</option>`;
                     })
                 })
+                db.close();
             }
             else if (i == 'id') {
                 tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" readonly value="${head.fields[i]}"></div>`;
@@ -374,7 +405,7 @@ delbtn.addEventListener('click', () => {
 
 okbtn.addEventListener('click', () => {
     for (let i in head.fields) {
-        head.fields[i] = document.getElementById(`input${i}`).value;
+        head.fields[i] = document.getElementById(`input${i}`).value == '' ? '-' : document.getElementById(`input${i}`).value;
     }
     modal.style.display = "none";
     tstop1.innerHTML = '';
@@ -396,4 +427,3 @@ clsbtn.addEventListener('click', () => {
 
 load();
 // ipcRenderer.send('open-file','mda');
-
