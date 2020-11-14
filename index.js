@@ -36,14 +36,25 @@ function load() {
         if (head.action == "change") {
             sql += `UPDATE ${head.table} SET `
             for (let i in head.fields) {
-                sql += `${i} = '${head.fields[i]}',`
+                if (i == 'Squad' && table != 'Section') {
+                    sql += `${i} = (select Squad from Section where Section.Section = "${head.fields.Section}"),`
+                }
+                else {
+                    sql += `${i} = '${head.fields[i]}',`
+                }
             }
             sql = sql.slice(0,sql.length-1) + ` WHERE id = ${head.oldid};`
+            console.log(sql)
         }
         else if (head.action == "add") {
             sql += `INSERT into ${head.table} VALUES (`;
-            for (let i in head.fields) {
-                sql += `'${head.fields[i]}',`
+            for (let i in head.fields ) {
+                if (i == 'Squad' && table != 'Section') {
+                    sql += `(select Squad from Section where Section.Section = "${head.fields.Section}"),`
+                }
+                else {
+                    sql += `'${head.fields[i]}',`
+                }
             }
             sql = sql.slice(0,sql.length-1) + ');'
         }
