@@ -222,15 +222,17 @@ function load() {
             document.getElementById('footer').innerHTML = '';
             db.each("select name from sqlite_master where type='table'", (err, row) => {
                 if ((row.name != "Assoc") && (row.name != "datas")) {
-                    document.getElementById('footer').innerHTML += `<button id=${row.name} class="tables">${assoc[row.name]}</button>`
-                    document.querySelectorAll(".tables").forEach((x) => {
-                        x.addEventListener('click', () => {
-                            table = x.id;
-                            head.action = "";
-                            load();
+                    if (row.name != 'Section') {
+                        document.getElementById('footer').innerHTML += `<button id=${row.name} class="tables">${assoc[row.name]}</button>`
+                        document.querySelectorAll(".tables").forEach((x) => {
+                            x.addEventListener('click', () => {
+                                table = x.id;
+                                head.action = "";
+                                load();
+                            })
                         })
-                    })
-                    table = row.name;
+                        table = row.name;
+                    }
                     tables.push(row.name)
                 }
             })
@@ -293,7 +295,12 @@ addbtn.addEventListener('click', () => {
             });
             db.serialize(() => {
                 db.each(`Select * from ${i};`, (err, row) => {
-                    document.getElementById(`input${i}`).innerHTML += `<option>${row.id}</option>`;
+                    if (i == 'Section') {
+                        document.getElementById(`input${i}`).innerHTML += `<option>${row.Section}</option>`;
+                    }
+                    else {
+                        document.getElementById(`input${i}`).innerHTML += `<option>${row.id}</option>`;
+                    }
                 })
             })
             db.close();
@@ -384,7 +391,12 @@ chgbtn.addEventListener('click', () => {
                 });
                 db.serialize(() => {
                     db.each(`Select * from ${i};`, (err, row) => {
-                        document.getElementById(`input${i}`).innerHTML += `<option>${row.id}</option>`;
+                        if (i == 'Section') {
+                            document.getElementById(`input${i}`).innerHTML += `<option>${row.Section}</option>`;
+                        }
+                        else {
+                            document.getElementById(`input${i}`).innerHTML += `<option>${row.id}</option>`;
+                        }
                     })
                 })
                 db.close();
