@@ -320,9 +320,6 @@ addbtn.addEventListener('click', () => {
     for (let i in datas) {
         if (document.getElementById(`div${datas[i]}`)) {
             document.getElementById(`div${datas[i]}`).children[0].addEventListener('change', (x) => {
-                // if (document.querySelector(`.opt${x.target.value}`.replace(' ', '-')).id != ''){
-                //     alert(document.querySelector(`.opt${x.target.value}`.replace(' ', '-')).id)
-                // }
                 let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
                     if (err) {
                       console.error(err.message);
@@ -412,9 +409,6 @@ chgbtn.addEventListener('click', () => {
             
         }
         modal.style.display = "block";
-    }
-    else {
-        alert("Выберете запись");
     }
 });
 
