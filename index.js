@@ -271,7 +271,7 @@ addbtn.addEventListener('click', () => {
     }
     for (let i in head.fields){
         if (datas.includes(`${table}.${i}`)) {
-            tstop1.innerHTML += `<div id="div${table}.${i}">${assoc[i]}: <select id= 'input${i}'></select></div>`;            
+            tstop1.innerHTML += `<div id="div${table}.${i}">${assoc[i]}: <select id= 'input${i}'></select> <div id='com'></div></div>`;            
             let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
                 if (err) {
                   console.error(err.message);
@@ -308,6 +308,9 @@ addbtn.addEventListener('click', () => {
         else if (i == 'id') {
             tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" readonly value="${amount}"></div>`;
         }
+        else if (i.includes('Data')){
+            tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" value="${head.fields[i]}" placeholder="дд.мм.гггг"></div>`;
+        }
         else {
             tstop1.innerHTML += `<div id="div${i}">${assoc[i]}: <input id = "input${i}" value="${head.fields[i]}"></div>`;
         }
@@ -320,7 +323,6 @@ addbtn.addEventListener('click', () => {
                 // if (document.querySelector(`.opt${x.target.value}`.replace(' ', '-')).id != ''){
                 //     alert(document.querySelector(`.opt${x.target.value}`.replace(' ', '-')).id)
                 // }
-                console.log('mda')
                 let db = new sqlite3.Database('testMCHS.db', sqlite3.OPEN_READWRITE, (err) => {
                     if (err) {
                       console.error(err.message);
@@ -329,7 +331,7 @@ addbtn.addEventListener('click', () => {
                 db.serialize(() => {
                     db.each(`Select * from datas Where value = "${x.target.value}";`, (err, row) => {
                         if (row.comment) {
-                            alert(row.comment);
+                            x.target.parentElement.lastElementChild.innerHTML = row.comment;
                         }
                     })
                 })
@@ -420,9 +422,6 @@ delbtn.addEventListener('click', () => {
     if (clicked) {
         head.action = "delete";
         load();
-    }
-    else {
-        alert("Не выбрано")
     }
 })
 
